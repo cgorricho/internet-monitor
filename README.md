@@ -1,142 +1,61 @@
-# 📡 Internet Connection Monitor
+# Internet Connection Monitor
 
-A comprehensive Python application that monitors internet connection performance and displays real-time metrics through an interactive Plotly Dash dashboard.
+Real-time internet performance monitoring with an interactive Plotly Dash dashboard. Tracks download speed, upload speed, latency, jitter, packet loss, WiFi signal strength, and DNS resolution — with intelligent peak-hour scheduling and 3-month data retention.
 
-## 🎯 Features
+## Why Build This?
 
-- **Real-time monitoring** of internet connection parameters
-- **Smart scheduling** with increased frequency during peak office hours
-- **Interactive dashboard** with time-series visualizations
-- **WiFi signal strength** monitoring for local connection quality
-- **Alert system** with configurable thresholds
-- **3-month data retention** with automatic cleanup
-- **Peak vs Off-Peak** performance comparisons
+ISP-provided "speed tests" give you a single point-in-time measurement. They don't tell you that your connection drops every Tuesday at 2pm, that your WiFi signal degrades when the microwave runs, or that your DNS resolution time spikes during peak hours.
 
-## 📊 Monitored Parameters
+This monitor runs continuously, captures the patterns, and surfaces the insights.
 
-### Core Performance Metrics
-- **Download Speed** (Mbps) - Primary bandwidth indicator
-- **Upload Speed** (Mbps) - Critical for remote work and video calls
-- **Ping/Latency** (ms) - Network responsiveness
-- **Jitter** (ms) - Latency stability
-- **Packet Loss** (%) - Connection reliability
+## What It Monitors
+
+### Performance Metrics
+| Metric | What It Reveals |
+|--------|----------------|
+| **Download Speed** (Mbps) | Bandwidth available for streaming, downloads |
+| **Upload Speed** (Mbps) | Critical for video calls and remote work |
+| **Ping/Latency** (ms) | Network responsiveness — affects real-time applications |
+| **Jitter** (ms) | Latency stability — high jitter = choppy video calls |
+| **Packet Loss** (%) | Connection reliability — even 1% causes noticeable issues |
 
 ### Infrastructure Health
-- **WiFi Signal Strength** (dBm) - Local wireless quality
-- **DNS Resolution Time** (ms) - Web browsing performance
-- **Public IP Address** - ISP connection stability tracking
-- **Connection Uptime** (%) - Overall reliability
+| Metric | What It Reveals |
+|--------|----------------|
+| **WiFi Signal** (dBm) | Local wireless quality — is the problem your ISP or your router? |
+| **DNS Resolution** (ms) | Web browsing performance — slow DNS = slow page loads |
+| **Public IP** | ISP connection stability — IP changes indicate reconnections |
+| **Uptime** (%) | Overall reliability trend |
 
-## 🚀 Quick Start
+## Smart Scheduling
 
-### 1. System Dependencies
+- **Peak hours** (configurable): Higher frequency monitoring during work hours
+- **Off-peak**: Reduced frequency to minimize bandwidth impact
+- **Automatic adjustment**: Adapts based on time of day
+
+## Dashboard Features
+
+- **Time-series visualizations**: All metrics over configurable time ranges
+- **Peak vs. off-peak comparison**: Side-by-side performance analysis
+- **Alert system**: Configurable thresholds for degradation detection
+- **3-month retention**: Automatic cleanup of old data
+- **Real-time updates**: Dashboard refreshes with latest measurements
+
+## Technology Stack
+
+| Component | Technology |
+|-----------|-----------|
+| Monitoring | Python (speedtest-cli, ping, WiFi tools) |
+| Dashboard | Plotly Dash |
+| Storage | Local SQLite / CSV |
+| Scheduling | Built-in with peak-hour awareness |
+
+## Quick Start
+
 ```bash
-# Install system-level dependencies
-sudo ./scripts/install_deps.sh
-```
-
-### 2. Python Environment
-```bash
-# Create and activate virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install Python dependencies
 pip install -r requirements.txt
+python monitor.py      # Start monitoring (background)
+python dashboard.py    # Launch dashboard
 ```
 
-### 3. Configuration
-```bash
-# Copy environment template
-cp .env.example .env
-
-# Edit configuration as needed
-nano .env
-```
-
-### 4. Database Initialization
-```bash
-# Initialize SQLite database
-python -c "from src.database import init_db; init_db()"
-```
-
-### 5. Run the Application
-```bash
-# Start monitoring (in background)
-./scripts/run_monitor.sh
-
-# Launch dashboard (separate terminal)
-./scripts/run_dashboard.sh
-```
-
-## 📈 Dashboard Access
-
-Open your web browser and navigate to:
-- **Local Access**: http://localhost:8050
-- **Network Access**: http://[your-ip]:8050
-
-## ⚙️ Configuration
-
-The application uses environment variables for configuration. Key settings include:
-
-- `PEAK_HOURS_START`: Start of peak monitoring (default: 09:00)
-- `PEAK_HOURS_END`: End of peak monitoring (default: 18:00)
-- `ALERT_DOWNLOAD_WARNING`: Download speed warning threshold (Mbps)
-- `ALERT_PING_CRITICAL`: Critical ping threshold (ms)
-
-See `.env.example` for all available options.
-
-## 🔄 Monitoring Schedule
-
-### Peak Office Hours (9 AM - 6 PM)
-- **Quick Tests**: Every 2 minutes
-- **Speed Tests**: Every 10 minutes
-- **Analysis**: Every 30 minutes
-
-### Off-Peak Hours
-- **Quick Tests**: Every 5 minutes
-- **Speed Tests**: Every 20 minutes
-- **Analysis**: Every hour
-
-## 📋 Requirements
-
-- **Python**: 3.9+
-- **OS**: Linux (WSL compatible)
-- **Network**: Active internet connection
-- **Storage**: ~50MB for 3 months of data
-
-## 🛠️ Development
-
-This project follows the development workflow defined in `DEVELOPMENT_WORKFLOW_GUIDE.md`:
-
-- Feature development in branches
-- Comprehensive testing
-- Documentation-first approach
-- Automated deployment scripts
-
-## 📚 Documentation
-
-- [Architecture Overview](docs/architecture.md)
-- [Deployment Guide](docs/deployment.md)
-- [Project Status](PROJECT_STATUS.md)
-- [Improvement Plan](IMPROVEMENT_PLAN.md)
-
-## 🚨 Troubleshooting
-
-### Common Issues
-
-1. **Speedtest fails**: Ensure Ookla CLI is installed and licensed accepted
-2. **WiFi detection fails**: Check if `iwconfig` is available and user has permissions
-3. **Dashboard not accessible**: Verify port 8050 is not in use
-
-### Logs
-Check application logs in the `logs/` directory for detailed error information.
-
-## 📄 License
-
-This project is intended for personal use and monitoring of your own internet connection.
-
----
-
-**Created by**: Carlos Gorricho  
-**Last Updated**: October 2024
+Open `http://localhost:8050` to view the dashboard.
