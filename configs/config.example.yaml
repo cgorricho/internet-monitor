@@ -1,0 +1,114 @@
+# Internet Monitor Configuration
+# Copy to config.yaml and modify as needed
+
+# Database Configuration
+database:
+  path: "./data/internet-monitor.db"
+  retention_days: 90
+  backup_path: "./data/backups"
+  max_connections: 10
+
+# Monitoring Configuration
+monitor:
+  # Unique identifier for this machine
+  machine_id: "auto-generated"
+  
+  # Peak monitoring hours (24-hour format)
+  peak_hours:
+    start: "09:00"
+    end: "18:00"
+  
+  # Test intervals
+  intervals:
+    # During peak hours (9 AM - 6 PM)
+    peak:
+      quick: "2m"        # Ping, DNS tests every 2 minutes
+      speed_test: "10m"   # Full speed tests every 10 minutes
+      analysis: "30m"     # Cleanup and analysis every 30 minutes
+    
+    # During off-peak hours
+    off_peak:
+      quick: "5m"         # Ping, DNS tests every 5 minutes
+      speed_test: "20m"   # Full speed tests every 20 minutes
+      analysis: "60m"     # Cleanup and analysis every hour
+
+  # Alert thresholds
+  alerts:
+    download:
+      warning: 25.0   # Mbps
+      critical: 10.0  # Mbps
+    upload:
+      warning: 5.0    # Mbps
+      critical: 1.0   # Mbps
+    ping:
+      warning: 50.0   # milliseconds
+      critical: 100.0 # milliseconds
+    packet_loss:
+      warning: 1.0    # percentage
+      critical: 3.0   # percentage
+    wifi:
+      warning: -70.0  # dBm (negative values)
+      critical: -80.0 # dBm
+    dns:
+      warning: 100.0  # milliseconds
+      critical: 500.0 # milliseconds
+
+# Network Testing Configuration
+network:
+  timeout: "60s"
+  retries: 3
+  
+  # Speed test backends configuration
+  speed_test:
+    primary: "httpfile"          # Primary backend to use
+    fallbacks: ["librespeed"]    # Fallback backends if primary fails
+    
+    backends:
+      # HTTP File Download/Upload Testing
+      httpfile:
+        options:
+          download_url: "https://proof.ovh.net/files/100Mb.dat"
+          upload_url: "https://httpbin.org/post"
+      
+      # LibreSpeed Open Source Testing
+      librespeed:
+        servers:
+          - "https://your-librespeed-server.com"
+          # Add more LibreSpeed server URLs as needed
+
+  # Ping test configuration
+  ping:
+    host: "8.8.8.8"
+    count: 4
+    timeout: "5s"
+
+  # DNS resolution test configuration
+  dns:
+    domain: "google.com"
+    timeout: "5s"
+
+# API Server Configuration (for pairing)
+server:
+  host: "127.0.0.1"
+  port: 8080
+  read_timeout: "30s"
+  write_timeout: "30s"
+  # Optional TLS configuration
+  # tls_cert: "./certs/server.crt"
+  # tls_key: "./certs/server.key"
+
+# Machine Pairing Configuration
+pairing:
+  enabled: false                    # Enable pairing functionality
+  token_ttl: "5m"                  # Pairing token time-to-live
+  peers_file: "./data/peers.json"  # File to store paired machines
+  cert_path: "./data/certs"        # Directory for certificates
+  key_path: "./data/keys"          # Directory for private keys
+
+# Logging Configuration
+logging:
+  level: "info"                    # debug, info, warn, error
+  file: "./logs/internet-monitor.log"
+  max_size: 100                    # MB
+  max_backups: 5                   # Number of old log files to keep
+  max_age: 30                      # Days to keep old log files
